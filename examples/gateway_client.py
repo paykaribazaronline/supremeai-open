@@ -110,12 +110,19 @@ def chat(
 
 if __name__ == "__main__":
     # বাংলা: one-shot CLI — agent-script/শেল-বান্ধব
+    # সৎ-ব্যর্থতা: typed GatewayError → এক-লাইন stderr + exit 1 (raw traceback নয়) —
+    # CI/GitHub-automation consumer (CONSUMERS.md §৬) non-blocking `||` পলিসি নির্ভর করে।
     import argparse
+    import sys
 
     parser = argparse.ArgumentParser(description="SupremeAI Gateway client")
     parser.add_argument("--model", default="auto")
     parser.add_argument("--prompt", required=True)
     parser.add_argument("--base-url", default=DEFAULT_BASE_URL)
     args = parser.parse_args()
-    out = chat([{"role": "user", "content": args.prompt}], model=args.model, base_url=args.base_url)
+    try:
+        out = chat([{"role": "user", "content": args.prompt}], model=args.model, base_url=args.base_url)
+    except GatewayError as err:
+        print(f"{type(err).__name__}: {err}", file=sys.stderr)
+        sys.exit(1)
     print(out["choices"][0]["message"]["content"])
