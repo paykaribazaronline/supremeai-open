@@ -40,13 +40,21 @@ secret   : vault-ফিড env — কখনো কোড/git/log-এ নয় 
 ## ৪. Python client (zero-dependency)
 
 ```python
-import sys; sys.path.insert(0, "scripts/clients")
+# পাবলিক mirror (এই repo) থেকে:
+import sys; sys.path.insert(0, "examples")
 from gateway_client import chat
 out = chat([{"role": "user", "content": "ping"}])   # env: SUPREMEAI_API_KEY
 print(out["choices"][0]["message"]["content"])
 ```
 
-CLI one-shot: `python3 scripts/clients/gateway_client.py --prompt "ping"`
+```python
+# প্রাইভেট monorepo-র ভেতরে (byte-mirror SSOT):
+import sys; sys.path.insert(0, "scripts/clients")
+from gateway_client import chat   # একই API
+```
+
+CLI one-shot: `python3 examples/gateway_client.py --prompt "ping"`
+(প্রাইভেট repo-তে: `python3 scripts/clients/gateway_client.py --prompt "ping"`)
 
 ## ৫. §15 — Agent-consumers
 
@@ -63,7 +71,7 @@ CLI one-shot: `python3 scripts/clients/gateway_client.py --prompt "ping"`
   env:
     SUPREMEAI_API_KEY: ${{ secrets.SUPREMEAI_API_KEY }}
   run: |
-    python3 scripts/clients/gateway_client.py \
+    python3 examples/gateway_client.py \
       --prompt "Summarize this diff for humans:" || echo "advisory failed — non-blocking"
 ```
 
