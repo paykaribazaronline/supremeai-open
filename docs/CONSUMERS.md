@@ -33,6 +33,7 @@ secret   : vault-ফিড env — কখনো কোড/git/log-এ নয় 
 | HTTP | অর্থ | consumer-করণীয় |
 |---|---|---|
 | 401 | key অবৈধ/বাতিল/মেয়াদোত্তীর্ণ | retry নয় — key যাচাই |
+| 403 | key বৈধ কিন্তু প্রয়োজনীয় scope নেই | retry নয় — key-এর scope যাচাই (নতুন key issue করতে হবে) |
 | 429 | per-key সীমা (`rate_limit_rps × window`) | Retry-After সম্মান |
 | 502 | fallback-chain শেষ — সব provider ব্যর্থ | কিছুক্ষণ পরে retry |
 | 503 | keyplane/অবকাঠামো অপ্রাপ্য | retry-যোগ্য (client নিজেই করে) |
