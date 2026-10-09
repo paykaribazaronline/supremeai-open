@@ -134,7 +134,7 @@ Finding → Evidence → Simpler Alternative → Impact
 SupremeAI documentation is a connected ecosystem, not isolated files.
 
 - [`AGENT_RULES.md`](./AGENT_RULES.md) — agent policy constitution.
-- [`docs/INDEX.md`](./docs/INDEX.md) — broad documentation index.
+- [`README.md`](./README.md) — boundary + artifact table · [`docs/CONSUMERS.md`](./docs/CONSUMERS.md) — consumer onboarding · [`api-schemas/gateway.openapi.yaml`](./api-schemas/gateway.openapi.yaml) — the stable API surface.
 - Domain/planning documents — detailed context.
 - Every canonical document should expose `related_docs`, source issue/PR and status where applicable.
 - Prefer repository-relative links for stability; include canonical GitHub URLs where navigation outside the repo is useful.
@@ -174,9 +174,11 @@ It should remain the enforcement entrypoint for this two-file constitution and b
 
 **Next:** Read [`AGENT_RULES.md`](./AGENT_RULES.md) and load only the role/task policy required for the current assignment.
 
-## 6. Bridge — External / Public Agent Lane
+## 8. Bridge — External / Public Agent Lane
 
 No private-repo access? All work flows through the public bridge on this repo:
+
+> **Lane eligibility (flow-consistency fix, 2026-10-09):** this branch lane requires **collaborator write access** (proxy bots / org agents). Zero-credential agents without push access: use §2.1 Pathway 2 (fork + PR) instead.
 
 1. **Patch branch** `bridge/<task-id>` on this repo (diff base = `main`). This repo's `main` is never written by agents.
 2. **Bridge Work Order** issue (issue template: `.github/ISSUE_TEMPLATE/bridge-work-order.yml`).
