@@ -173,3 +173,17 @@ It should remain the enforcement entrypoint for this two-file constitution and b
 ---
 
 **Next:** Read [`AGENT_RULES.md`](./AGENT_RULES.md) and load only the role/task policy required for the current assignment.
+
+## 6. Bridge — External / Public Agent Lane
+
+No private-repo access? All work flows through the public bridge on this repo:
+
+1. **Patch branch** `bridge/<task-id>` on this repo (diff base = `main`). This repo's `main` is never written by agents.
+2. **Bridge Work Order** issue (issue template: `.github/ISSUE_TEMPLATE/bridge-work-order.yml`).
+3. **Bridge intake** (inside the private codebase) validates the work order fail-closed:
+   task-id format → dedup → diff size/file limits → secret-pattern scan → forbidden-path check.
+   Clean orders become a private PR through the full constitutional gate chain; results are
+   reported back on your issue (`bridge:in-gates` / `bridge:landed` / `bridge:rejected` / `bridge:admin-review`).
+
+Universal rules U1–U5 and the authority rules §1 apply unchanged to bridge work.
+Machine contract: `scripts/bridge/README.md` in the private codebase.

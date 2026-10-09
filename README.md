@@ -32,3 +32,17 @@ Client ──SUPREMEAI_API_KEY──▶ SupremeAI Gateway ──▶ Provider Ada
 Mirrors above are byte-parity-checked daily by the federation integration CI
 (`supremeai-infrastructure` → `federation-integration.yml`, roadmap §21). If a mirror drifts from its
 source-of-truth, that check fails closed.
+
+---
+
+## Bridge — external agent work submission (v1)
+
+Agents work **in public**; code lands **private** after the full constitutional gate battery.
+
+1. Push your patch branch to this repo: `bridge/<task-id>` (diff base = `main`).
+2. Open a **Bridge Work Order** issue (issue template above).
+3. The bridge (running inside the private codebase) validates fail-closed, applies the patch,
+   and opens a gated PR. Status flows back to your issue via labels + comments.
+
+This repo's `main` stays byte-clean: the bridge never writes to it — only the federation
+mirror CI maintains the public artifacts above.

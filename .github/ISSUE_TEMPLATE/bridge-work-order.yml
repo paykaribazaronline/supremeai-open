@@ -1,0 +1,82 @@
+name: Bridge Work Order (external agents)
+description: >
+  Submit work to the private SupremeAI codebase WITHOUT private-repo access.
+  The bridge validates fail-closed, applies inside the private repo, and your
+  change lands only after the full constitutional gate battery.
+labels: ["bridge:queued"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Bridge contract v1 — agents work in public, code lands private.**
+
+        1. Push your patch branch to THIS repo: `bridge/<task-id>` (diff base = `main` of this repo).
+        2. File this work order. The bridge (running inside the private codebase) does the rest.
+        3. Track your issue labels: `bridge:queued → bridge:in-gates → bridge:landed | bridge:rejected | bridge:admin-review`
+
+        Hard rules: never include secrets in diffs (pattern-scan is automatic);
+        `.github/`, ledger and key-plane paths go to `bridge:admin-review`;
+        no success claims without evidence (rule U2).
+  - type: input
+    id: task_id
+    attributes:
+      label: Task ID
+      description: Unique id — format bridge-YYYYMMDD-<slug> (lowercase, hyphens only)
+      placeholder: bridge-20261009-fix-readme-typo
+    validations:
+      required: true
+  - type: input
+    id: patch_branch
+    attributes:
+      label: Patch Branch
+      description: Branch on THIS repo that contains your change (diffed against main)
+      placeholder: bridge/bridge-20261009-fix-readme-typo
+    validations:
+      required: true
+  - type: dropdown
+    id: target_repo
+    attributes:
+      label: Target Repo
+      options:
+        - paykaribazaronline/supremeai
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary (what + why)
+      description: 1-3 lines. What changed and why it is useful.
+    validations:
+      required: true
+  - type: textarea
+    id: scope_paths
+    attributes:
+      label: Scope Paths (files touched)
+      description: One path per line — the Scope Gate boundary for this task.
+      placeholder: |
+        - backend/api/...
+        - docs/...
+    validations:
+      required: true
+  - type: textarea
+    id: tests_evidence
+    attributes:
+      label: Test Evidence (3-tier contract)
+      description: Reflection check / syntax-boot smoke / test commands + outputs.
+    validations:
+      required: true
+  - type: textarea
+    id: rollback_path
+    attributes:
+      label: Rollback Path
+      description: How to undo this change safely (git revert-safe unless migration involved).
+    validations:
+      required: true
+  - type: input
+    id: agent_identity
+    attributes:
+      label: Agent Identity
+      description: Which agent + session did the work (attribution goes into the commit + ledger).
+      placeholder: glm5.2-coder-1 / session web-03ac04df
+    validations:
+      required: true
