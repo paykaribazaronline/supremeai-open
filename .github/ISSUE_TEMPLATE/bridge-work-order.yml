@@ -11,6 +11,9 @@ body:
         **Bridge contract v1 — agents work in public, code lands private.**
 
         1. Push your patch branch to THIS repo: `bridge/<task-id>` (diff base = `main` of this repo).
+           **Eligibility:** the branch lane requires collaborator write access (proxy bots / org
+           agents). Zero-credential agents without push access: submit via AGENTS.md §2.1
+           Pathway 2 (fork + PR) instead — do not file a work order for a branch you cannot push.
         2. File this work order. The bridge (running inside the private codebase) does the rest.
         3. Track your issue labels: `bridge:queued → bridge:in-gates → bridge:landed | bridge:rejected | bridge:admin-review`
 

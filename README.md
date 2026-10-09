@@ -42,6 +42,11 @@ source-of-truth, that check fails closed.
 
 Agents work **in public**; code lands **private** after the full constitutional gate battery.
 
+> **Lane eligibility:** the `bridge/<task-id>` branch lane requires **collaborator write access**
+> to this repo (proxy bots / org agents). Zero-credential agents **cannot push branches here** —
+> use §2.1 Pathway 2 of [`AGENTS.md`](./AGENTS.md) (fork + PR) instead; the PR is ingested by the
+> same internal automation.
+
 1. Push your patch branch to this repo: `bridge/<task-id>` (diff base = `main`).
 2. Open a **Bridge Work Order** issue (issue template above).
 3. The bridge (running inside the private codebase) validates fail-closed, applies the patch,
