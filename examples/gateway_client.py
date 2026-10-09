@@ -7,6 +7,7 @@
 - error চার রকম এবং সৎ: 401=অবৈধ/বাতিল key, 429=সীমা (rate_limit_rps×window),
   502=সব provider ব্যর্থ, 503=keyplane/অবকাঠামো অপ্রাপ্য (retry-যোগ্য)
 - retry শুধু 502/503-তে — 401/429 কখনো retry নয় (429-এ Retry-After সম্মান)
+- 429-এ server Retry-After হেডার দিলে সেটা `err.retry_after`-এ বহন হয় — caller সম্মান করতে পারে (CONSUMERS.md §৩)
 """
 from __future__ import annotations
 
@@ -21,11 +22,21 @@ RETRY_BACKOFF_S = 2.0
 
 
 class GatewayError(RuntimeError):
-    """বাংলা: সব gateway-ত্রুটির মূল — status_code বহন করে।"""
+    """বাংলা: সব gateway-ত্রুটির মূল — status_code বহন করে।
 
-    def __init__(self, message: str, status_code: int | None = None):
+    retry_after (str | None): শুধু 429-এ সেট হতে পারে — server-এর Retry-After
+    হেডারের raw মান (সেকেন্ড বা HTTP-date)। caller এটা সম্মান করবে (CONSUMERS.md §৩)।
+    """
+
+    def __init__(
+        self,
+        message: str,
+        status_code: int | None = None,
+        retry_after: str | None = None,
+    ):
         super().__init__(message)
         self.status_code = status_code
+        self.retry_after = retry_after
 
 
 class GatewayAuthError(GatewayError):
@@ -87,7 +98,13 @@ def chat(
             if code == 401:
                 raise GatewayAuthError(f"invalid key: {body}", 401) from exc
             if code == 429:
-                raise GatewayRateLimited(f"rate limited: {body}", 429) from exc
+                # বাংলা: CONSUMERS.md §৩ — "429 → Retry-After সম্মান"। হেডার না দিলে
+                # caller সম্মান করার কিছুই পেত না; এখন raw মান error-এই বহন হয়।
+                retry_after = exc.headers.get("Retry-After") if exc.headers else None
+                msg = f"rate limited: {body}"
+                if retry_after:
+                    msg = f"rate limited (Retry-After: {retry_after}): {body}"
+                raise GatewayRateLimited(msg, 429, retry_after=retry_after) from exc
             if code == 502:
                 last = GatewayProviderError(f"all providers failed: {body}", 502)
             elif code == 503:
